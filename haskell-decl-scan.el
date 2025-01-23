@@ -560,11 +560,11 @@ datatypes) in a Haskell file for the `imenu' package."
     ;; Now sort all the lists, label them, and place them in one list.
     (dolist (type '((datatype . "Datatypes") (instance . "Instances")
                     (import   . "Imports")   (class    . "Classes")))
-      (when-let ((curr-alist (gethash (car type) imenu)))
+      (when-let* ((curr-alist (gethash (car type) imenu)))
         (push (cons (cdr type)
                     (sort curr-alist 'haskell-ds-imenu-label-cmp))
               index-alist)))
-    (when-let ((var-alist (gethash 'variable imenu)))
+    (when-let* ((var-alist (gethash 'variable imenu)))
       (if haskell-decl-scan-bindings-as-variables
           (push (cons "Variables"
                       (sort var-alist 'haskell-ds-imenu-label-cmp))

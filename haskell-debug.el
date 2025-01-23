@@ -34,7 +34,7 @@
   :group 'haskell)
 
 (defface haskell-debug-warning-face
-  '((t :inherit 'compilation-warning))
+  '((t :inherit compilation-warning))
   "Face for warnings."
   :group 'haskell-debug)
 
@@ -49,12 +49,12 @@
   :group 'haskell-debug)
 
 (defface haskell-debug-keybinding-face
-  '((t :inherit 'font-lock-type-face :weight bold))
+  '((t :inherit font-lock-type-face :weight bold))
   "Face for keybindings."
   :group 'haskell-debug)
 
 (defface haskell-debug-heading-face
-  '((t :inherit 'font-lock-keyword-face))
+  '((t :inherit font-lock-keyword-face))
   "Face for headings."
   :group 'haskell-debug)
 
@@ -313,7 +313,7 @@
 
 (defun haskell-debug-trim-break-location (string)
   "Remove trailing location of current break from output STRING if exists."
-  (if-let ((i (string-match "^\\(... \\)?\\[[^]]+\\] $" string)))
+  (if-let* ((i (string-match "^\\(... \\)?\\[[^]]+\\] $" string)))
       (substring string 0 i)
     string))
 

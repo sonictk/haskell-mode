@@ -165,13 +165,16 @@
   "Kill the buffer and (maybe) the session."
   (interactive)
   (when (eq major-mode 'haskell-interactive-mode)
-    (haskell-mode-toggle-interactive-prompt-state)
     (unwind-protect
-        (when (and (boundp 'haskell-session)
-                   haskell-session
-                   (y-or-n-p "Kill the whole session? "))
-          (haskell-session-kill t)))
-    (haskell-mode-toggle-interactive-prompt-state t)))
+        (progn
+          ;; Protected body: do the initial prompt toggle and the kill check
+          (haskell-mode-toggle-interactive-prompt-state)
+          (when (and (boundp 'haskell-session)
+                     haskell-session
+                     (y-or-n-p "Kill the whole session? "))
+            (haskell-session-kill t)))
+      ;; Cleanup form: always toggle back
+      (haskell-mode-toggle-interactive-prompt-state t))))
 
 (defun haskell-session-make (name)
   "Make a Haskell session called NAME."
@@ -218,18 +221,21 @@ If `haskell-process-load-or-reload-prompt' is nil, accept `default'."
 
 (defun haskell-session-new ()
   "Make a new session."
-  (let ((name (read-from-minibuffer "Project name: " (haskell-session-default-name))))
+  (let ((name (read-from-minibuffer
+               "Project name: " (haskell-session-default-name))))
     (when (not (string= name ""))
       (let ((session (haskell-session-lookup name)))
-        (haskell-mode-toggle-interactive-prompt-state)
         (unwind-protect
-            (if session
-                (when
-                    (y-or-n-p
-                     (format "Session %s already exists. Use it?" name))
-                  session)
-              (haskell-session-make name)))
-        (haskell-mode-toggle-interactive-prompt-state t)))))
+            ;; Protected body
+            (progn
+              (haskell-mode-toggle-interactive-prompt-state)
+              (if session
+                  (when (y-or-n-p
+                         (format "Session %s already exists. Use it?" name))
+                    session)
+                (haskell-session-make name)))
+          ;; Cleanup form (always run)
+          (haskell-mode-toggle-interactive-prompt-state t))))))
 
 ;;;###autoload
 (defun haskell-session-change ()

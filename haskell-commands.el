@@ -354,7 +354,7 @@ If the definition or tag is found, the location from which you jumped
 will be pushed onto `xref--marker-ring', so you can return to that
 position with `xref-pop-marker-stack'."
   (interactive "P")
-  (if-let ((session (haskell-session-maybe))
+  (if-let* ((session (haskell-session-maybe))
            (initial-loc (point-marker))
            (loc (haskell-mode-find-def (haskell-ident-at-point))))
       (progn
@@ -523,7 +523,7 @@ Requires the :loc-at command from GHCi."
          (dir (haskell-session-prompt-set-current-dir session)))
     (haskell-process-log
      (propertize (format "Changing directory to %s ...\n" dir)
-                 'face font-lock-comment-face))
+                 'face 'font-lock-comment-face))
     (haskell-process-change-dir session
                                 (haskell-interactive-process)
                                 dir)))
